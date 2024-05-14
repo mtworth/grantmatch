@@ -17,8 +17,6 @@ if page == "Home":
     with col2: 
         st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
 
-    st.markdown('##')     
-
     #logos evenly distributed 
 
     seal1, seal2, seal3, seal4, seal5 = st.columns(5)
