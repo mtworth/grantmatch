@@ -11,7 +11,7 @@ if page == "Home":
     col1, col2 = st.columns(2)
     with col1: 
         #make this bold colored large font matching the brand primary color
-        st.header("Grantr Match")
+        st.header("Match to Grants")
         st.write("Using artificial intelligence to help match billions of dollars in federal grants to your project and organization.")
         st.button("Find Grants",type="primary")
     with col2: 
