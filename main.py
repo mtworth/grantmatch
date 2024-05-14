@@ -35,7 +35,6 @@ if page == "Home":
     with seal5:
         st.image("https://github.com/mtworth/grantr/blob/main/images/NIH_Master_Logo_Vertical_2Color.png?raw=true",width=w)
 
-    st.markdown('######')     
     col3, col4 = st.columns(2)
     with col3: 
         st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
@@ -43,7 +42,6 @@ if page == "Home":
         st.subheader("Artificial Intelligence, Applied")
         st.write("We use state of the art generative AI to help remove the tedious work of searching grants and tell you whether a grant is the right match for you and your project.")
 
-    st.markdown('##')     
     col5, col6 = st.columns(2)
     with col5:
         st.subheader("Fully Open Source")
