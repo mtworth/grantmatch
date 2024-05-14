@@ -92,7 +92,7 @@ if page == "Find Grants":
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            st.button("Apply")
+            st.button("Apply",use_container_width=True)
 
         with col3: 
-            st.button("Next▸")
+            st.button("Next▸",use_container_width=True)
