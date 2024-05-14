@@ -1,6 +1,7 @@
 import os
 import streamlit as st
 from streamlit_navigation_bar import st_navbar
+from streamlit_extras.stylable_container import stylable_container 
 
 
 st.set_page_config(initial_sidebar_state="collapsed")
@@ -50,5 +51,48 @@ if page == "Home":
 
 if page == "About":
     st.write("Welcome again")
+
+    
 if page == "Find Grants":
-    st.write("test")
+    with st.container(border=True):
+        st.subheader("Grant Match")
+        st.write("Who are you?")
+        entity = st.text_input("Examples: local nonprofit, city government, individual, etc.")
+        st.write("What are you trying to fund?")
+        proposal = st.text_input("Examples: a research project, a local community program, an infrastructure project, tec.")
+        if st.button("Submit"):
+            st.session_state.proposal = {"entity": entity, "proposal": proposal}
+    with st.container(border = True):
+        st.subheader("Opportunity Title")
+        st.caption("US Department of Transportation")
+
+        st.markdown("**Opportunity Description**")
+        st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+
+        st.markdown("**Grantr's Verdict**")
+        st.caption("AI Generated")
+        #annotated_text((" ", "AI-Generated"))
+        
+        with stylable_container(
+                key="container_with_border",
+                css_styles="""
+                    {
+                        border: 1px solid rgba(49, 51, 63, 0.2);
+                        border-radius: 0.5rem;
+                        padding: calc(1em - 1px);
+                        background-color: lightgreen
+
+                    }
+                    """,
+            ):
+                st.markdown("**Grantr's Verdict**\
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+        ##st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+        
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.button("Apply")
+
+        with col3: 
+            st.button("Next▸")
