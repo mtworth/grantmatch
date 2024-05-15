@@ -54,45 +54,53 @@ if page == "About":
 
     
 if page == "Find Grants":
-    with st.container(border=True):
-        st.subheader("Grant Match")
+    with st.form("Submission Form"):
+        st.subheader("Grant Match Submission Form")
         st.write("Who are you?")
         entity = st.text_input("Examples: local nonprofit, city government, individual, etc.")
         st.write("What are you trying to fund?")
-        proposal = st.text_input("Examples: a research project, a local community program, an infrastructure project, tec.")
-        if st.button("Submit"):
-            st.session_state.proposal = {"entity": entity, "proposal": proposal}
-    with st.container(border = True):
-        st.subheader("Opportunity Title")
-        st.caption("US Department of Transportation")
-
-        st.markdown("**Opportunity Description**")
-        st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-
-        st.markdown("**Grantr's Verdict**")
-        st.caption("AI Generated")
-        #annotated_text((" ", "AI-Generated"))
+        proposal = st.text_input("Examples: a research project on ocean acidiciation, a local community program, building a new bridge, etc.")
+        submitted = st.form_submit_button("Match")
         
-        with stylable_container(
-                key="container_with_border",
-                css_styles="""
-                    {
-                        border: 1px solid rgba(49, 51, 63, 0.2);
-                        border-radius: 0.5rem;
-                        padding: calc(1em - 1px);
-                        background-color: lightgreen
+        #if st.button("Submit"):
+        #    st.session_state.proposal = {"entity": entity, "proposal": proposal}
+    if submitted:
+        st.write(entity)
+        behindbutton, forwardbutton = st.columns(2)
+        with behindbutton:
+            st.button("◀ Prior Grant",use_container_width=True)
+        with forwardbutton:
+            st.button("Next Grant ▶",use_container_width=True)
+        with st.container(border = True):
+            st.subheader("Opportunity Title")
+            st.write("🏛️ Agency: US Department of Transportation")
+            st.write("💵 Grant Range: $50,000 to $100,000")
+            st.write("📅 Due Date: 5/14/2024")
+            st.markdown("**📄 Opportunity Description**")
+            st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
 
-                    }
-                    """,
-            ):
-                st.markdown("**Grantr's Verdict**\
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-        ##st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-        
-        col1, col2, col3 = st.columns(3)
+            st.markdown("**🤖 Grant Match Verdict** (AI Generated)")
+            #annotated_text((" ", "AI-Generated"))
+            
+            with stylable_container(
+                    key="container_with_border",
+                    css_styles="""
+                        {
+                            border: 1px solid rgba(49, 51, 63, 0.2);
+                            border-radius: 0.5rem;
+                            padding: calc(1em - 1px);
+                            background-color: lightgreen
 
-        with col1:
-            st.button("Apply",use_container_width=True)
+                        }
+                        """,
+                ):
+                    st.markdown("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+            ##st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+            
+            col1, col2, col3 = st.columns(3)
 
-        with col3: 
-            st.button("Next▸",use_container_width=True)
+            with col1:
+                st.button("Apply",use_container_width=True)
+
+            with col3: 
+                st.button("Email",use_container_width=True)
