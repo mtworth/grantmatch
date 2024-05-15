@@ -56,7 +56,7 @@ if page == "About":
 if page == "Find Grants":
     with st.form("Submission Form"):
         st.subheader("Grant Match Submission Form")
-        st.write("Before we can match you to federal grants, we need to know a bit more about and what you're trying to accomplish with grant funds.")
+        st.write("Before we can match you to open federal grants, we need to know a bit more about and what you're trying to accomplish with grant funds.")
         st.write("Who are you?")
         entity = st.text_input("Examples: local nonprofit, city government, individual, etc.")
         st.write("What are you trying to fund?")
