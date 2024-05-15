@@ -56,16 +56,18 @@ if page == "About":
 if page == "Find Grants":
     with st.form("Submission Form"):
         st.subheader("Grant Match Submission Form")
+        st.write("Before we can match you to federal grants, we need to know a bit more about and what you're trying to accomplish with grant funds.")
         st.write("Who are you?")
         entity = st.text_input("Examples: local nonprofit, city government, individual, etc.")
         st.write("What are you trying to fund?")
         proposal = st.text_input("Examples: a research project on ocean acidiciation, a local community program, building a new bridge, etc.")
-        submitted = st.form_submit_button("Match")
+        submitted = st.form_submit_button("Match My Project!",type="primary")
         
         #if st.button("Submit"):
         #    st.session_state.proposal = {"entity": entity, "proposal": proposal}
     if submitted:
-        st.write(entity)
+        #TODO put them all in a container? 
+        st.write("XX grants found!")
         behindbutton, forwardbutton = st.columns(2)
         with behindbutton:
             st.button("◀ Prior Grant",use_container_width=True)
@@ -73,13 +75,13 @@ if page == "Find Grants":
             st.button("Next Grant ▶",use_container_width=True)
         with st.container(border = True):
             st.subheader("Opportunity Title")
-            st.write("🏛️ Agency: US Department of Transportation")
-            st.write("💵 Grant Range: $50,000 to $100,000")
-            st.write("📅 Due Date: 5/14/2024")
-            st.markdown("**📄 Opportunity Description**")
+            st.write("🏛️ **Agency**: US Department of Transportation")
+            st.write("💵 **Grant Range**: \$50,000 to \$100,000")
+            st.write("📅 **Due Date**: 5/14/2024")
+            st.write("**📄 Opportunity Description**")
             st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
 
-            st.markdown("**🤖 Grant Match Verdict** (AI Generated)")
+            st.write("**🤖 Grant Match Verdict** (AI Generated)")
             #annotated_text((" ", "AI-Generated"))
             
             with stylable_container(
@@ -100,7 +102,7 @@ if page == "Find Grants":
             col1, col2, col3 = st.columns(3)
 
             with col1:
-                st.button("Apply",use_container_width=True)
-
+                st.link_button("**Email Details** ✉️","mailto:?subject=Exciting%20Grant%20Opportunity",use_container_width=True)
             with col3: 
-                st.button("Email",use_container_width=True)
+                #TODOfix grants link 
+                st.link_button("**Apply** 😏","https://www.grants.gov",type="primary",use_container_width=True)
