@@ -6,7 +6,28 @@ from streamlit_extras.stylable_container import stylable_container
 
 st.set_page_config(initial_sidebar_state="collapsed")
 
-page = st_navbar(["","","","","Home", "Find Grants", "About"])#,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
+styles = {
+    "nav": {
+        "background-color": "#2A1E5C",
+        "justify-content": "right",
+    },
+    "img": {
+        "padding-right": "14px",
+    },
+    "span": {
+        "color": "white",
+        "padding": "14px",
+    },
+    "hover": {
+        "background-color": "white",
+        "color": "var(--text-color)",
+        "font-weight": "normal",
+        "padding": "14px",
+    }
+}
+
+
+page = st_navbar(["","","","Home", "Find Grants", "About"],styles=styles)#,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
 
 if page == "Home":
     col1, col2 = st.columns(2)
