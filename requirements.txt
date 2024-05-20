@@ -1,3 +1,5 @@
 streamlit_navigation_bar
 st-annotated-text
 streamlit-extras
+replicate
+sentence-transformers
