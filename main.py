@@ -126,61 +126,68 @@ if page == "Find Grants":
         st.write("What are you trying to fund?")
         proposal = st.text_input("Examples: a research project on ocean acidiciation, a local community program, building a new bridge, etc.")
         submitted = st.form_submit_button("Match My Project!",type="primary")
-        
-        #if st.button("Submit"):
-        #    st.session_state.proposal = {"entity": entity, "proposal": proposal}
+       
     if submitted:
         query_embeddings = model.encode(proposal, prompt_name="query")
         dataset_embeddings_torch = torch.from_numpy(document_embeddings).to(torch.float)
         query_embeddings_torch = torch.FloatTensor(query_embeddings)
-
         k = len(dataset_embeddings_torch)
-        hits = semantic_search(query_embeddings_torch, dataset_embeddings_torch,top_k=k)
+        hits = semantic_search(query_embeddings_torch, dataset_embeddings_torch, top_k=k)
 
+        # Flatten the nested list and convert to DataFrame
+        search_df = pd.DataFrame([item for sublist in hits for item in sublist])
 
-        # Flatten the nested list
-        flattened_data = [item for sublist in hits for item in sublist]
+        # Set index and join with grants_df
+        result = (
+            grants_df[['opportunityid','opportunitytitle','agencyname','eligibleapplicants',
+                    'additionalinformationoneligibility','description','awardfloor',
+                    'awardceiling','postdate','closedate','grantorcontactemail']]
+            .join(search_df.set_index('corpus_id'))
+        )
 
-        # Convert the flattened list to a DataFrame
-        search_df = pd.DataFrame(flattened_data)
+        # Filter and sort in one step
+        dataset = result[result['score'] > 0.25].sort_values(by='score', ascending=False).reset_index(drop=True)
+        
+        # Initialize index
+        if 'index' not in st.session_state:
+            st.session_state.index = 0
 
-        search_df.set_index('corpus_id', inplace=True)
-
-        result = grants_df[['opportunityid','opportunitytitle','agencyname','eligibleapplicants','additionalinformationoneligibility','description','awardfloor','awardceiling','postdate','closedate','grantorcontactemail']].join(search_df)
-
-        dataset = result[result['score'] > 0.2].sort_values(by=['score'], ascending=False).reset_index(drop=True)
 
         num_results = len(dataset)
         award_ceiling_sum = dataset['awardceiling'].dropna().sum() / 1000000
-        #print(f"The total award ceiling for eligible grants is ${award_ceiling_sum:.2f} million.")
-        description = dataset.iloc[0]['description']
         award_ceiling_sum = dataset['awardceiling'].dropna().sum() / 1000000
         if award_ceiling_sum >= 1000:
             award_ceiling_display = f"${award_ceiling_sum / 1000:.2f} billion"
         else:
             award_ceiling_display = f"${award_ceiling_sum:.2f} million"
 
-
-
+        
 
         with st.container(border = True):
+            st.write(st.session_state.index)
+
             st.subheader("**Search Results**")
             st.write(f"**{num_results}** grants found with more than **{award_ceiling_display}** available in funding! Use the buttons below to page through the results.")
             behindbutton, forwardbutton = st.columns(2)
             with behindbutton:
-                st.button("◀ Prior Grant",use_container_width=True)
+                if st.button("◀ Prior Grant", key='behindbutton', use_container_width=True):
+                    st.session_state.index = max(0, st.session_state.index - 1)
+                    #st.session_state.index -= 1
             with forwardbutton:
-                st.button("Next Grant ▶",use_container_width=True)
+                if st.button("Next Grant ▶",use_container_width=True):
+                    st.session_state.index += 1
 
-        index = 0 
-        description = dataset.iloc[0]['description']
-        opportunitytitle = dataset.iloc[0]['opportunitytitle']
-        opportunityid = dataset.iloc[0]['opportunityid']
-        awardfloor = dataset.iloc[0]['awardceiling']
-        closedate = dataset.iloc[0]['closedate']
-        agencyname = dataset.iloc[0]['agencyname']
-        postdate = dataset.iloc[0]['postdate']
-        grantorcontactemail = dataset.iloc[0]['grantorcontactemail']
+
+
+        page = st.session_state.index
+        description = dataset.iloc[page]['description']
+        opportunitytitle = dataset.iloc[page]['opportunitytitle']
+        opportunityid = dataset.iloc[page]['opportunityid']
+        awardfloor = dataset.iloc[page]['awardceiling']
+        closedate = dataset.iloc[page]['closedate']
+        agencyname = dataset.iloc[page]['agencyname']
+        postdate = dataset.iloc[page]['postdate']
+        grantorcontactemail = dataset.iloc[page]['grantorcontactemail']
 
 
 
