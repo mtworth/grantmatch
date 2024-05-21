@@ -116,18 +116,24 @@ if page == "Home":
 if page == "About":
     st.write("Welcome again")
 
-    
+###TODO Add form submission to session state. Display buttons if session state is not empty. 
 if page == "Find Grants":
-    with st.form("Submission Form"):
+    with st.container(border = True):
+    #with st.form("Submission Form"):
+        if 'proposal' not in st.session_state:
+            st.session_state.proposal = ''
         st.subheader("Grant Match Submission Form")
         st.write("Before we can match you to open federal grants, we need to know a bit more about and what you're trying to accomplish with grant funds.")
         st.write("Who are you?")
         entity = st.text_input("Examples: local nonprofit, city government, individual, etc.")
         st.write("What are you trying to fund?")
         proposal = st.text_input("Examples: a research project on ocean acidiciation, a local community program, building a new bridge, etc.")
-        submitted = st.form_submit_button("Match My Project!",type="primary")
-       
-    if submitted:
+        #submitted = st.form_submit_button("Match My Project!",type="primary")
+        if st.button("Match My Project!",type="primary"):
+            st.session_state.proposal = proposal
+
+    #if proposal session state is not empty, then do the below. 
+    if st.session_state.proposal:
         query_embeddings = model.encode(proposal, prompt_name="query")
         dataset_embeddings_torch = torch.from_numpy(document_embeddings).to(torch.float)
         query_embeddings_torch = torch.FloatTensor(query_embeddings)
@@ -175,7 +181,8 @@ if page == "Find Grants":
                     #st.session_state.index -= 1
             with forwardbutton:
                 if st.button("Next Grant ▶",use_container_width=True):
-                    st.session_state.index += 1
+                    st.write("test")
+                    #st.session_state.index += 1
 
 
 
