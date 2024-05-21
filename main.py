@@ -20,7 +20,7 @@ st.set_page_config(initial_sidebar_state="collapsed")
 
 styles = {
     "nav": {
-        "background-color": "#2A1E5C",
+        "background-color": "#0D3A67",
         "justify-content": "right",
     },
     "img": {
@@ -39,12 +39,12 @@ styles = {
 }
 
 
-page = st_navbar(["","","","","Home", "Find Grants"],styles=styles)#,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
+page = st_navbar(["","","","","Home", "Find Grants"])#,styles=styles,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
 
 ###### IMPORT GRANTS EMBEDDING ##################################################################################################################
 ###############################################################################################################################################
 
-@st.cache
+@@st.cache_resource
 def download_and_process_data(url):
     # Download the zip file
     response = requests.get(url)
@@ -73,7 +73,7 @@ def download_and_process_data(url):
     else:
         return None, None
 
-@st.cache(allow_output_mutation=True)
+@@st.cache_data(allow_output_mutation=True)
 def load_model():
     return SentenceTransformer("Snowflake/snowflake-arctic-embed-m")
 
@@ -98,8 +98,8 @@ if page == "Home":
         st.write("Using artificial intelligence to help match billions of dollars in federal grants to your project and organization.")
         st.button("Find Grants",type="primary")
     with col2: 
-        st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
-
+        #st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
+        st.image("https://img.freepik.com/free-vector/instruction-manual-guide-document-with-cogwheel-isolated-design-element-male-character-analyzing-file-business-analysis-data-processing-updating-concept-illustration_335657-1666.jpg?size=626&ext=jpg&ga=GA1.1.1297810838.1715575667")
     #logos evenly distributed 
 
     seal1, seal2, seal3, seal4, seal5 = st.columns(5)
@@ -118,7 +118,7 @@ if page == "Home":
 
     col3, col4 = st.columns(2)
     with col3: 
-        st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
+        st.image("https://img.freepik.com/free-vector/business-team-brainstorm-idea-lightbulb-from-jigsaw-working-team-collaboration-enterprise-cooperation-colleagues-mutual-assistance-concept-pinkish-coral-bluevector-isolated-illustration_335657-1651.jpg")
     with col4:
         st.subheader("Artificial Intelligence, Applied")
         st.write("We use state of the art generative AI to help remove the tedious work of searching grants and tell you whether a grant is the right match for you and your project.")
@@ -128,7 +128,7 @@ if page == "Home":
         st.subheader("Fully Open Source")
         st.write("This entire application is built entirely on the Snowflake open source ecosystem, including Streamlit and Artic LLM. No need to worry about shady data pipelines and questionable AI.")
     with col6:
-        st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
+        st.image("https://img.freepik.com/free-vector/corporate-website-abstract-concept-illustration_335657-1831.jpg?size=626&ext=jpg&ga=GA1.1.1297810838.1715575667")
  
 
 #if page == "About":
