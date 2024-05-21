@@ -73,7 +73,7 @@ def download_and_process_data(url):
     else:
         return None, None
 
-@st.cache_data(allow_output_mutation=True)
+@st.cache_resource(allow_output_mutation=True)
 def load_model():
     return SentenceTransformer("Snowflake/snowflake-arctic-embed-m")
 
