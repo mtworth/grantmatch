@@ -118,7 +118,9 @@ if page == "Home":
         #make this bold colored large font matching the brand primary color
         st.header("Match to Grants")
         st.write("Using artificial intelligence to help match billions of dollars in federal grants to your project and organization.")
-        #st.button("Find Grants",type="primary")
+        #if st.button("Find Grants",type="primary"):
+        #    page = "Find Grants"
+            
     with col2: 
         #st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
         st.image("https://img.freepik.com/free-vector/instruction-manual-guide-document-with-cogwheel-isolated-design-element-male-character-analyzing-file-business-analysis-data-processing-updating-concept-illustration_335657-1666.jpg?size=626&ext=jpg&ga=GA1.1.1297810838.1715575667")
