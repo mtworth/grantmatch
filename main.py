@@ -38,7 +38,7 @@ styles = {
     }
 }
 
-logo_path = "https://github.com/mtworth/grantmatch/blob/main/images/grantsmatch.svg"
+logo_path = "https://www.svgrepo.com/show/303106/mcdonald-s-15-logo.svg"
 
 page = st_navbar(["Home", "Find Grants"],styles=styles,logo_path=logo_path)
 
