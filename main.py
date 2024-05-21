@@ -10,8 +10,11 @@ import numpy as np
 import torch
 from sentence_transformers.util import semantic_search
 from sentence_transformers import SentenceTransformer
+import replicate
 
-
+###############################################################################################################################################
+###### SET-UP NAVIGATION BAR ##################################################################################################################
+###############################################################################################################################################
 
 st.set_page_config(initial_sidebar_state="collapsed")
 
@@ -36,9 +39,11 @@ styles = {
 }
 
 
-page = st_navbar(["","","","Home", "Find Grants", "About"],styles=styles)#,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
+page = st_navbar(["","","","","Home", "Find Grants"],styles=styles)#,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
 
 ###### IMPORT GRANTS EMBEDDING ##################################################################################################################
+###############################################################################################################################################
+
 # URL of the zip file
 url = "https://github.com/mtworth/grantmatch/blob/main/embedded_grants.zip?raw=true"
 
@@ -56,8 +61,6 @@ if response.status_code == 200:
             grants_df = pd.read_csv(f)
 
 model = SentenceTransformer("Snowflake/snowflake-arctic-embed-m")
-
-import numpy as np
 
 def convert(item):
     item = item.strip()  # remove spaces at the end
@@ -113,24 +116,31 @@ if page == "Home":
         st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
  
 
-if page == "About":
-    st.write("Welcome again")
-
+#if page == "About":
+#    st.write("Grant Match is a live, working tool I developed to help individuals and organizations match to the billions of dollars in grants awarded by the federal government every year. After a decade in the public sector and having applied to dozens of grants and contracts, I saw an opportunity to experiment with generative AI to smooth this process. This tool is fully open source and free to use. For more details, check out the GitHub repo. Made with ❤ with Streamlit and Snowflake. -Maxwell")
+             
 ###TODO Add form submission to session state. Display buttons if session state is not empty. 
 if page == "Find Grants":
+
+    # Initialize index
+    if 'index' not in st.session_state:
+        st.session_state.index = 0
+
     with st.container(border = True):
     #with st.form("Submission Form"):
         if 'proposal' not in st.session_state:
             st.session_state.proposal = ''
         st.subheader("Grant Match Submission Form")
         st.write("Before we can match you to open federal grants, we need to know a bit more about and what you're trying to accomplish with grant funds.")
-        st.write("Who are you?")
-        entity = st.text_input("Examples: local nonprofit, city government, individual, etc.")
+        #st.write("Who are you?")
+        #entity = st.text_input("Examples: local nonprofit, city government, individual, etc.")
         st.write("What are you trying to fund?")
-        proposal = st.text_input("Examples: a research project on ocean acidiciation, a local community program, building a new bridge, etc.")
+        proposal = st.text_area("Examples: a research project on ocean acidiciation, a local community program, building a new bridge, etc.")
         #submitted = st.form_submit_button("Match My Project!",type="primary")
         if st.button("Match My Project!",type="primary"):
             st.session_state.proposal = proposal
+            st.session_state.index = 0
+
 
     #if proposal session state is not empty, then do the below. 
     if st.session_state.proposal:
@@ -152,11 +162,9 @@ if page == "Find Grants":
         )
 
         # Filter and sort in one step
-        dataset = result[result['score'] > 0.25].sort_values(by='score', ascending=False).reset_index(drop=True)
+        dataset = result[(result['score'] > 0.25) & (result['description'].str.len() > 100)].sort_values(by='score', ascending=False).reset_index(drop=True)
         
-        # Initialize index
-        if 'index' not in st.session_state:
-            st.session_state.index = 0
+        
 
 
         num_results = len(dataset)
@@ -168,66 +176,76 @@ if page == "Find Grants":
             award_ceiling_display = f"${award_ceiling_sum:.2f} million"
 
         
+        if num_results > 0:
 
-        with st.container(border = True):
-            st.write(st.session_state.index)
+            with st.container(border = True):
 
+                st.subheader("**Search Results**")
+                st.write(f"**{num_results}** grants found with more than **{award_ceiling_display}** available in funding! Use the buttons below to page through the results.")
+                behindbutton, forwardbutton = st.columns(2)
+                with behindbutton:
+                    if st.button("◀ Prior Grant", key='behindbutton', use_container_width=True):
+                        #st.session_state.index = max(0, st.session_state.index - 1)
+                        st.session_state.index -= 1
+                with forwardbutton:
+                    if st.button("Next Grant ▶",use_container_width=True):
+                        st.session_state.index += 1
+
+
+
+
+
+            page = st.session_state.index
+            description = dataset.iloc[page]['description']
+            opportunitytitle = dataset.iloc[page]['opportunitytitle']
+            opportunityid = dataset.iloc[page]['opportunityid']
+            awardceiling = dataset.iloc[page]['awardceiling']
+            awardfloor = dataset.iloc[page]['awardfloor']
+            closedate = dataset.iloc[page]['closedate']
+            agencyname = dataset.iloc[page]['agencyname']
+            postdate = dataset.iloc[page]['postdate']
+            grantorcontactemail = dataset.iloc[page]['grantorcontactemail']
+            grant_link = "https://www.grants.gov/search-results-detail/"  + str(dataset.iloc[page]['opportunityid'])
+
+            
+            os.environ["REPLICATE_API_TOKEN"] = ""
+            api = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
+
+            input = {
+                "prompt": f"You a helpful grant assistant. Talk to a prospective applicant has proposed a project: {proposal}. The grant in question is {description}. Keep your response short and concise, no more than 2-3 sentences. Treat it like a snappy verdict. Include at least one helpful tip. Your personality is overly cheery. The grants have already been matched, so if you don't think it's a good match, include recommendations for how to tweak the project to meet the grant.",
+                "temperature": 0.2
+            }
+
+            output = api.run(
+                "snowflake/snowflake-arctic-instruct",
+                input=input
+
+            )
+
+            verdict = "".join(output)
+
+
+            grantmatchverdict = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+            with st.container(border = True):
+                st.subheader(opportunitytitle)
+                st.write(f"🏛️ **Agency**: {agencyname}")
+                st.write(f"💵 **Grant Range**: \${awardfloor} - \${awardceiling}")
+                st.write(f"📅 **Due Date**: {closedate}")
+                st.write(f"**✉️ Grant Contact:** {grantorcontactemail}")
+                st.write(f"**📄 Opportunity Description**")
+                st.write(f"{description}")
+
+                st.write("**🤖 Grant Match Verdict** (AI Generated)")
+                
+                st.info(verdict)
+
+                col1, col2, col3 = st.columns(3)
+
+                with col3: 
+                    #TODOfix grants link 
+                    st.link_button("**Apply** 😏",grant_link,type="primary",use_container_width=True)
+        else:
             st.subheader("**Search Results**")
-            st.write(f"**{num_results}** grants found with more than **{award_ceiling_display}** available in funding! Use the buttons below to page through the results.")
-            behindbutton, forwardbutton = st.columns(2)
-            with behindbutton:
-                if st.button("◀ Prior Grant", key='behindbutton', use_container_width=True):
-                    st.session_state.index = max(0, st.session_state.index - 1)
-                    #st.session_state.index -= 1
-            with forwardbutton:
-                if st.button("Next Grant ▶",use_container_width=True):
-                    st.write("test")
-                    #st.session_state.index += 1
+            st.write("Unfortunately, we couldn't find any grants that match your project. Consider updating your proposal. Better luck next time! 😃")
 
-
-
-        page = st.session_state.index
-        description = dataset.iloc[page]['description']
-        opportunitytitle = dataset.iloc[page]['opportunitytitle']
-        opportunityid = dataset.iloc[page]['opportunityid']
-        awardfloor = dataset.iloc[page]['awardceiling']
-        closedate = dataset.iloc[page]['closedate']
-        agencyname = dataset.iloc[page]['agencyname']
-        postdate = dataset.iloc[page]['postdate']
-        grantorcontactemail = dataset.iloc[page]['grantorcontactemail']
-
-
-
-        with st.container(border = True):
-            st.subheader(opportunitytitle)
-            st.write(f"🏛️ **Agency**: {agencyname}")
-            st.write(f"💵 **Grant Range**: \$50,000 to \$100,000")
-            st.write(f"📅 **Due Date**: {closedate}")
-            st.write(f"**📄 Opportunity Description**")
-            st.write(f"{description}")
-
-            st.write("**🤖 Grant Match Verdict** (AI Generated)")
-            #annotated_text((" ", "AI-Generated"))
-            
-            with stylable_container(
-                    key="container_with_border",
-                    css_styles="""
-                        {
-                            border: 1px solid rgba(49, 51, 63, 0.2);
-                            border-radius: 0.5rem;
-                            padding: calc(1em - 1px);
-                            background-color: lightgreen
-
-                        }
-                        """,
-                ):
-                    st.markdown("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-            ##st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-            
-            col1, col2, col3 = st.columns(3)
-
-            with col1:
-                st.link_button("**Email Details** ✉️","mailto:?subject=Exciting%20Grant%20Opportunity",use_container_width=True)
-            with col3: 
-                #TODOfix grants link 
-                st.link_button("**Apply** 😏","https://www.grants.gov",type="primary",use_container_width=True)
