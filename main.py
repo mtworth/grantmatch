@@ -39,7 +39,7 @@ styles = {
 }
 
 
-page = st_navbar(["","","","","Home", "Find Grants"])#,styles=styles,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
+page = st_navbar(["","","","","Home", "Find Grants"],styles=styles)#,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
 
 ###### IMPORT GRANTS EMBEDDING ##################################################################################################################
 ###############################################################################################################################################
@@ -102,19 +102,20 @@ if page == "Home":
         st.image("https://img.freepik.com/free-vector/instruction-manual-guide-document-with-cogwheel-isolated-design-element-male-character-analyzing-file-business-analysis-data-processing-updating-concept-illustration_335657-1666.jpg?size=626&ext=jpg&ga=GA1.1.1297810838.1715575667")
     #logos evenly distributed 
 
+    st.caption("Sourcing grants from:")
     seal1, seal2, seal3, seal4, seal5 = st.columns(5)
 
     w = 50
     with seal1:
-        st.image("https://github.com/mtworth/grantr/blob/main/images/NIH_Master_Logo_Vertical_2Color.png?raw=true",width=w)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/7/7b/Seal_of_the_United_States_Department_of_State.svg",width=w)
     with seal2:
-        st.image("https://github.com/mtworth/grantr/blob/main/images/NIH_Master_Logo_Vertical_2Color.png?raw=true",width =w)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/NOAA_logo.svg/2048px-NOAA_logo.svg.png",width =w)
     with seal3:
-        st.image("https://github.com/mtworth/grantr/blob/main/images/NIH_Master_Logo_Vertical_2Color.png?raw=true",width=w)
+        st.image("https://www.nist.gov/sites/default/files/images/2020/06/24/usda.png",width=w)
     with seal4:
-        st.image("https://github.com/mtworth/grantr/blob/main/images/NIH_Master_Logo_Vertical_2Color.png?raw=true",width=w)
+        st.image("https://www.nih.gov/sites/default/files/about-nih/2012-logo.png",width=w)
     with seal5:
-        st.image("https://github.com/mtworth/grantr/blob/main/images/NIH_Master_Logo_Vertical_2Color.png?raw=true",width=w)
+        st.image("https://onemap.cdc.gov/Portal/sharing/rest/content/items/6b55227caecc4ad38dd67a0a447b52ca/data",width=w)
 
     col3, col4 = st.columns(2)
     with col3: 
@@ -126,7 +127,7 @@ if page == "Home":
     col5, col6 = st.columns(2)
     with col5:
         st.subheader("Fully Open Source")
-        st.write("This entire application is built entirely on the Snowflake open source ecosystem, including Streamlit and Artic LLM. No need to worry about shady data pipelines and questionable AI.")
+        st.write("This entire application is built entirely on the Snowflake open source ecosystem, including Streamlit and Artic LLM.")
     with col6:
         st.image("https://img.freepik.com/free-vector/corporate-website-abstract-concept-illustration_335657-1831.jpg?size=626&ext=jpg&ga=GA1.1.1297810838.1715575667")
  
