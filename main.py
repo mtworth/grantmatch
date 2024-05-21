@@ -38,8 +38,9 @@ styles = {
     }
 }
 
+logo_path = "https://github.com/mtworth/grantmatch/blob/main/images/grantsmatch.svg"
 
-page = st_navbar(["","","","","Home", "Find Grants"],styles=styles)#,logo_path="https://raw.githubusercontent.com/mtworth/grantr/f558bf2f6245deaa1035d12f04df8e181492017a/images/logoipsum-311.svg")
+page = st_navbar(["Home", "Find Grants"],styles=styles,logo_path=logo_path)
 
 ###### IMPORT GRANTS EMBEDDING ##################################################################################################################
 ###############################################################################################################################################
@@ -91,6 +92,7 @@ model = load_model()
 
 
 if page == "Home":
+    st.write(logo_path)
     col1, col2 = st.columns(2)
     with col1: 
         #make this bold colored large font matching the brand primary color
