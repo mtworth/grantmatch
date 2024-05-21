@@ -44,7 +44,7 @@ page = st_navbar(["","","","","Home", "Find Grants"])#,styles=styles,logo_path="
 ###### IMPORT GRANTS EMBEDDING ##################################################################################################################
 ###############################################################################################################################################
 
-@@st.cache_resource
+@st.cache_resource
 def download_and_process_data(url):
     # Download the zip file
     response = requests.get(url)
@@ -73,7 +73,7 @@ def download_and_process_data(url):
     else:
         return None, None
 
-@@st.cache_data(allow_output_mutation=True)
+@st.cache_data(allow_output_mutation=True)
 def load_model():
     return SentenceTransformer("Snowflake/snowflake-arctic-embed-m")
 
