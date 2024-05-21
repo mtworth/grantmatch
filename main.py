@@ -207,7 +207,7 @@ if page == "Find Grants":
             grantorcontactemail = dataset.iloc[page]['grantorcontactemail']
             grant_link = "https://www.grants.gov/search-results-detail/"  + str(dataset.iloc[page]['opportunityid'])
 
-            os.environ["REPLICATE_API_TOKEN"] = st.secrets["replicate_token "]
+            os.environ["REPLICATE_API_TOKEN"] = st.secrets["replicate_token"]
             api = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
 
             input = {
