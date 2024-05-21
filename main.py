@@ -11,6 +11,8 @@ import torch
 from sentence_transformers.util import semantic_search
 from sentence_transformers import SentenceTransformer
 import replicate
+import urllib.request
+
 
 ###############################################################################################################################################
 ###### SET-UP NAVIGATION BAR ##################################################################################################################
@@ -21,7 +23,7 @@ st.set_page_config(initial_sidebar_state="collapsed")
 styles = {
     "nav": {
         "background-color": "#0D3A67",
-        "justify-content": "right",
+        "justify-content": "left",
     },
     "img": {
         "padding-right": "14px",
@@ -38,7 +40,26 @@ styles = {
     }
 }
 
-logo_path = "https://www.svgrepo.com/show/303106/mcdonald-s-15-logo.svg"
+def download_file(url, dest):
+    """Download a file from url and save it at destination."""
+    with urllib.request.urlopen(url) as response, open(dest, 'wb') as out_file:
+        while True:
+            data = response.read(8192)
+            if not data:
+                break
+            out_file.write(data)
+    print("Downloaded {} to {}".format(url, dest))
+
+# Define the SVG file URL and local file name
+svg_url = "https://raw.githubusercontent.com/mtworth/grantmatch/ce678a2f6d042abc35826ad8650cfedf3d178190/images/grantsmatchlogo.svg"
+local_filename = "logo.svg"
+
+# Download the SVG file and save it to disk
+print("Downloading SVG file...")
+download_file(svg_url, local_filename)
+
+# Get the absolute file path of the SVG file
+logo_path = os.path.abspath(local_filename)
 
 page = st_navbar(["Home", "Find Grants"],styles=styles,logo_path=logo_path)
 
@@ -92,19 +113,18 @@ model = load_model()
 
 
 if page == "Home":
-    st.write(logo_path)
     col1, col2 = st.columns(2)
     with col1: 
         #make this bold colored large font matching the brand primary color
         st.header("Match to Grants")
         st.write("Using artificial intelligence to help match billions of dollars in federal grants to your project and organization.")
-        st.button("Find Grants",type="primary")
+        #st.button("Find Grants",type="primary")
     with col2: 
         #st.image("https://github.com/mtworth/grantr/blob/main/main/corp_art.jpg?raw=true")
         st.image("https://img.freepik.com/free-vector/instruction-manual-guide-document-with-cogwheel-isolated-design-element-male-character-analyzing-file-business-analysis-data-processing-updating-concept-illustration_335657-1666.jpg?size=626&ext=jpg&ga=GA1.1.1297810838.1715575667")
     #logos evenly distributed 
 
-    st.caption("Sourcing grants from:")
+    st.caption("Sourcing grants via Grants.gov from:")
     seal1, seal2, seal3, seal4, seal5 = st.columns(5)
 
     w = 50
