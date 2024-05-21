@@ -44,33 +44,48 @@ page = st_navbar(["","","","","Home", "Find Grants"],styles=styles)#,logo_path="
 ###### IMPORT GRANTS EMBEDDING ##################################################################################################################
 ###############################################################################################################################################
 
+@st.cache
+def download_and_process_data(url):
+    # Download the zip file
+    response = requests.get(url)
+    if response.status_code == 200:
+        # Open the zip file as a byte stream
+        with zipfile.ZipFile(io.BytesIO(response.content)) as z:
+            # List all contents of the zip file
+            print(z.namelist())
+            
+            # Extract the .csv file
+            with z.open('embedded_grants.csv') as f:
+                # Read the .csv file into a pandas DataFrame
+                grants_df = pd.read_csv(f)
+        
+        def convert(item):
+            item = item.strip()  # remove spaces at the end
+            item = item[1:-1]    # remove `[ ]`
+            item = np.fromstring(item, sep=' ')  # convert string to `numpy.array`
+            return item
+        
+        grants_df['document_embeddings'] = grants_df['document_embeddings'].apply(convert)
+        
+        document_embeddings = np.array(grants_df['document_embeddings'].tolist(), dtype=np.float32)
+        
+        return grants_df, document_embeddings
+    else:
+        return None, None
+
+@st.cache(allow_output_mutation=True)
+def load_model():
+    return SentenceTransformer("Snowflake/snowflake-arctic-embed-m")
+
 # URL of the zip file
 url = "https://github.com/mtworth/grantmatch/blob/main/embedded_grants.zip?raw=true"
 
-# Download the zip file
-response = requests.get(url)
-if response.status_code == 200:
-    # Open the zip file as a byte stream
-    with zipfile.ZipFile(io.BytesIO(response.content)) as z:
-        # List all contents of the zip file
-        print(z.namelist())
-        
-        # Extract the .csv file
-        with z.open('embedded_grants.csv') as f:
-            # Read the .csv file into a pandas DataFrame
-            grants_df = pd.read_csv(f)
+# Download and process data
+grants_df, document_embeddings = download_and_process_data(url)
 
-model = SentenceTransformer("Snowflake/snowflake-arctic-embed-m")
+# Load the model
+model = load_model()
 
-def convert(item):
-    item = item.strip()  # remove spaces at the end
-    item = item[1:-1]    # remove `[ ]`
-    item = np.fromstring(item, sep=' ')  # convert string to `numpy.array`
-    return item
-
-grants_df['document_embeddings'] = grants_df['document_embeddings'].apply(convert)
-
-document_embeddings = np.array(grants_df['document_embeddings'].tolist(), dtype=np.float32)
 
 ###### CREATE APP FLOW ##################################################################################################################
 
